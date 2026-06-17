@@ -15,7 +15,7 @@ import axios from 'axios'
 
 // ── Axios instance ─────────────────────────────────────────────────
 const api = axios.create({
-  baseURL: '/api/v1',             // proxied by Vite to http://localhost:8000
+  baseURL: 'https://ragshield-production.up.railway.app/api/v1',             // proxied by Vite to http://localhost:8000
   timeout: 60_000,                // 60s — agent pipeline can take time
   headers: {
     'Content-Type': 'application/json',
