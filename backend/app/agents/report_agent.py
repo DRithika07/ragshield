@@ -11,6 +11,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict
 
+from app.db.database import AsyncSessionFactory
+
+from app.db.database import SessionLocal
+
 from app.config import settings
 from app.utils.logger import get_logger
 
@@ -71,7 +75,29 @@ class ReportAgent:
             bound_log.error(f"PDF generation failed in ReportAgent: {e}")
             file_path = None
 
+         # Save report to DB so it appears in the Reports UI
+        try:
+            from app.db.database import AsyncSessionFactory
+            from app.db.models import IncidentReport
+            async with AsyncSessionFactory() as db:
+                record = IncidentReport(
+                    id=report_id,
+                    threat_log_id=state.get("threat_id"),
+                    report_title=title,
+                    file_name=file_name,
+                    file_path=file_path,
+                    file_size_bytes=os.path.getsize(file_path) if file_path else 0,
+                    report_type="single",
+                    generated_by="ReportAgent",
+                )
+                db.add(record)
+                await db.commit()
+                bound_log.info(f"Report saved to DB: {report_id}")
+        except Exception as e:
+            bound_log.error(f"Failed to save report to DB: {e}")
+
         return {
             "report_id": report_id,
             "report_path": file_path,
         }
+        

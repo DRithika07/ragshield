@@ -1,0 +1,7 @@
+{
+  "model": "XGBoost",
+  "optimal_threshold": 0.34,
+  "selection_criterion": "test_f1_macro",
+  "test_f1_macro": 0.9052,
+  "note": "classifier.pkl = XGBoost (selected by test F1). Set THREAT_THRESHOLD in .env to optimal_threshold."
+}

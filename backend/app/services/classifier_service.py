@@ -135,6 +135,12 @@ class ClassifierService:
         # Step 6: Severity and attack type
         severity = self._compute_severity(fusion_score)
         attack_type = self._infer_attack_type(text, similar_docs, fusion_score)
+        if attack_type != "safe":
+            predicted_label = 1
+            is_malicious = True
+            if fusion_score < settings.threat_threshold:
+                fusion_score = settings.threat_threshold
+        severity = self._compute_severity(fusion_score)
 
         result = {
             "ml_score": round(ml_score, 4),
@@ -286,32 +292,77 @@ class ClassifierService:
 
         Priority: pattern match → neighbor metadata → generic label
         """
-        if fusion_score < settings.threat_threshold:
-            return "safe"
+        
 
         text_lower = text.lower()
 
         # Direct pattern matching for well-known injection patterns
         patterns = {
             "jailbreak": [
-                "ignore previous", "ignore all", "forget your instructions",
-                "disregard", "override", "bypass", "jailbreak", "dan mode",
-                "pretend you are", "act as if you have no",
-            ],
+    "ignore previous",
+    "ignore all",
+    "forget your instructions",
+    "forget all previous instructions",
+    "disregard",
+    "override",
+    "bypass",
+    "jailbreak",
+    "dan mode",
+    "developer mode",
+    "unrestricted mode",
+    "pretend you are",
+    "act as if you have no",
+    "ignore safety rules",
+    "disable safety",
+    "remove restrictions",
+],
             "prompt_injection": [
-                "system prompt", "reveal your", "show me your instructions",
-                "what are your rules", "print your prompt", "repeat after me",
-                "output your", "display your system",
-            ],
+        "system prompt",
+        "reveal your",
+        "show me your instructions",
+        "what are your rules",
+        "print your prompt",
+        "repeat after me",
+        "output your",
+        "display your system",
+        "hidden system instructions",
+        "reveal all hidden",
+        "developer prompt",
+        "developer prompts",
+        "hidden instructions",
+        "internal instructions",
+        "system instructions",
+        "confidential memory",
+        "print confidential memory",
+    ],
+
             "role_hijacking": [
-                "you are now", "act as", "roleplay as", "pretend to be",
-                "your new role", "switch to", "become a",
-            ],
-            "data_extraction": [
-                "training data", "your knowledge base", "internal data",
-                "confidential", "secret", "private information",
-                "database contents", "extract all",
-            ],
+    "you are now",
+    "act as",
+    "roleplay as",
+    "pretend to be",
+    "your new role",
+    "switch to",
+    "become a",
+    "you are an evil ai",
+    "you are chatgpt without restrictions",
+    "you are a hacker",
+],
+           "data_extraction": [
+    "training data",
+    "your knowledge base",
+    "internal data",
+    "confidential",
+    "secret",
+    "private information",
+    "database contents",
+    "extract all",
+    "show hidden data",
+    "leak information",
+    "reveal stored data",
+    "show memory",
+    "export database",
+],
             "indirect_injection": [
                 "summarize this", "translate this", "the document says",
                 "according to the file", "based on the context above",
@@ -322,6 +373,9 @@ class ClassifierService:
             if any(kw in text_lower for kw in keywords):
                 return attack_type
 
+# No keyword match and score below threshold → safe
+        if fusion_score < settings.threat_threshold:
+            return "safe"
         # Fall back to most common attack type among malicious neighbors
         malicious_neighbors = [
             d for d in similar_docs

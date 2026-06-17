@@ -1,0 +1,26 @@
+SENTINEL-RAG — CLASSIFICATION REPORTS
+
+============================================================
+  LogisticRegression (threshold=0.52)
+============================================================
+               precision    recall  f1-score   support
+
+     Safe (0)       0.82      0.95      0.88        56
+Malicious (1)       0.94      0.80      0.86        60
+
+     accuracy                           0.87       116
+    macro avg       0.88      0.87      0.87       116
+ weighted avg       0.88      0.87      0.87       116
+
+
+============================================================
+  XGBoost (threshold=0.34)
+============================================================
+               precision    recall  f1-score   support
+
+     Safe (0)       0.87      0.95      0.91        56
+Malicious (1)       0.95      0.87      0.90        60
+
+     accuracy                           0.91       116
+    macro avg       0.91      0.91      0.91       116
+ weighted avg       0.91      0.91      0.91       116

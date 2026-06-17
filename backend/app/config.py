@@ -39,7 +39,7 @@ class Settings(BaseSettings):
 
     # ── Google Gemini ────────────────────────────────────────────────
     gemini_api_key: str = Field(default="")
-    gemini_model: str = "gemini-1.5-flash"
+    gemini_model: str = "gemini-2.0-flash"
     gemini_max_tokens: int = Field(default=1024, ge=128, le=8192)
     gemini_temperature: float = Field(default=0.2, ge=0.0, le=1.0)
 
@@ -63,7 +63,7 @@ class Settings(BaseSettings):
 
     # ── ML Classifier ────────────────────────────────────────────────
     model_path: str = "./ml/saved_models/classifier.pkl"
-    threat_threshold: float = Field(default=0.50, ge=0.0, le=1.0)
+    threat_threshold: float = Field(default=0.45, ge=0.0, le=1.0)
     similarity_threshold: float = Field(default=0.82, ge=0.0, le=1.0)
     ml_score_weight: float = Field(default=0.60, ge=0.0, le=1.0)
     similarity_score_weight: float = Field(default=0.40, ge=0.0, le=1.0)

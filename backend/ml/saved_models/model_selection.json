@@ -1,0 +1,15 @@
+{
+  "selected_model": "XGBoost",
+  "selection_criterion": "test_f1_macro",
+  "test_accuracy": 0.9052,
+  "test_f1": 0.9052,
+  "test_roc_auc": 0.9705,
+  "optimal_threshold": 0.34,
+  "runner_up": {
+    "LogisticRegression": {
+      "test_accuracy": 0.8707,
+      "test_f1": 0.8704,
+      "test_roc_auc": 0.9449
+    }
+  }
+}

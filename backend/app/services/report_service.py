@@ -9,6 +9,7 @@ import asyncio
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+import traceback
 from typing import Dict, List
 
 from app.config import settings
@@ -92,7 +93,7 @@ class ReportService:
                 textColor=colors.HexColor("#6366f1"),
                 spaceAfter=6,
             )
-            story.append(Paragraph("🛡 SENTINEL-RAG", title_style))
+            story.append(Paragraph("SENTINEL-RAG", title_style))
             story.append(Paragraph(report_title, styles["Heading2"]))
             story.append(Paragraph(
                 f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
@@ -193,8 +194,7 @@ class ReportService:
             return os.path.getsize(file_path)
 
         except Exception as e:
-            log.error(f"PDF generation failed: {e}")
-            # Create a minimal text fallback
-            with open(file_path, "wb") as f:
-                f.write(b"%PDF-1.4\n% Sentinel-RAG Report (generation failed)\n")
-            return os.path.getsize(file_path)
+                import traceback
+                traceback.print_exc()  # prints full error to terminal
+                log.error(f"PDF generation failed: {e}")
+                raise

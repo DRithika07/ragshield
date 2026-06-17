@@ -216,3 +216,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Build
+frontend/dist/
+
+# Backend data
+backend/data/
+backend/reports/
+backend/ml/saved_models/
+
+# Venv
+backend/venv/
+.venv/
+
+# DB
+*.db
+*.sqlite3
+
+# ChromaDB
+chroma/
+chroma_db/
+
+# OS
+.DS_Store
+Thumbs.db

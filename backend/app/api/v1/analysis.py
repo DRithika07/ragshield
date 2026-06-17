@@ -45,12 +45,13 @@ async def analyze_prompt(
     clf = await classifier.aclassify(request.prompt, embedding=embedding)
 
     explanation = await gemini_svc.explain_threat(
-        prompt_text=request.prompt,
-        attack_type=clf["attack_type"],
-        fusion_score=clf["fusion_score"],
-        severity=clf["severity"],
-        similar_examples=clf.get("top_similar", []),
-    )
+    prompt_text=request.prompt,
+    attack_type=clf["attack_type"],
+    fusion_score=clf["fusion_score"],
+    severity=clf["severity"],
+    is_malicious=clf["is_malicious"],
+    similar_examples=clf.get("top_similar", []),
+)
 
     mitigation = []
     if clf["is_malicious"]:

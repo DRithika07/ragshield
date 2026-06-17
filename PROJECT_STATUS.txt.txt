@@ -1,0 +1,201 @@
+# Agentic AI-Based Detection and Mitigation of Memory Poisoning Attacks in RAG Systems
+
+## Project Overview
+
+AI-powered security platform for detecting and mitigating memory poisoning, prompt injection, jailbreak, role hijacking, and related attacks in RAG systems.
+
+## Tech Stack
+
+### Frontend
+
+* React
+* Tailwind CSS
+* Framer Motion
+* Zustand
+* Axios
+
+### Backend
+
+* FastAPI
+* LangGraph
+* Gemini API
+* ChromaDB
+* Sentence Transformers
+* SQLite
+
+### ML
+
+* Scikit-learn / XGBoost
+* ChromaDB Vector Search
+* Embedding-based Similarity Detection
+
+---
+
+# Completed Phases
+
+## Phase 1 — Architecture & Foundation
+
+* Folder structure created
+* System architecture designed
+* API architecture finalized
+
+## Phase 2 — Backend Core
+
+* FastAPI setup completed
+* Routes implemented
+* Services implemented
+* ChromaDB integration completed
+* Gemini integration completed
+
+## Phase 3 — ML Pipeline
+
+* Threat classifier trained
+* Embedding pipeline implemented
+* Similarity search implemented
+* Threat scoring completed
+
+## Phase 4 — Agent System
+
+* Detection Agent
+* Analysis Agent
+* Mitigation Agent
+* Report Agent
+* LangGraph orchestration completed
+
+## Phase 5 — Frontend
+
+### Step 1
+
+* Frontend foundation
+* Vite configuration
+* Tailwind configuration
+* Zustand store
+* API service layer
+
+### Step 2
+
+* Shared UI components
+
+### Step 3
+
+* Layout system
+* Sidebar
+* Navbar
+
+### Step 4
+
+* SOC Dashboard
+
+### Step 5
+
+* Threat Analysis Module
+
+### Step 6
+
+* Agent Workflow Visualization
+
+---
+
+# Current Phase
+
+## Phase 5 — Step 7
+
+Memory Poisoning Visualization
+
+Pending Components:
+
+* VectorSimilarityChart.jsx
+* ThreatClusterGraph.jsx
+* DocumentInjectionPanel.jsx
+* MemoryPoison.jsx
+
+---
+
+# Remaining Work
+
+## Phase 6
+
+* PDF Report System
+* Report Center UI
+* Report Download APIs
+
+## Phase 7
+
+* Deployment
+* Docker
+* Docker Compose
+* CI/CD
+
+## Phase 8
+
+* Optimization
+* Performance tuning
+* Research paper assets
+* Publication-ready documentation
+
+---
+PROJECT: Agentic AI-Based Detection and Mitigation of Memory Poisoning Attacks in RAG Systems
+
+TECH STACK:
+- React
+- Tailwind CSS
+- Framer Motion
+- Zustand
+- FastAPI
+- LangGraph
+- ChromaDB
+- Gemini API
+
+COMPLETED:
+
+Phase 1:
+✔ Architecture
+✔ Folder structure
+
+Phase 2:
+✔ Backend implementation
+
+Phase 3:
+✔ ML threat classifier
+✔ Embeddings
+✔ ChromaDB threat library
+
+Phase 4:
+✔ Detection Agent
+✔ Analysis Agent
+✔ Mitigation Agent
+✔ Report Agent
+✔ LangGraph orchestration
+
+Phase 5:
+✔ Step 1 Foundation
+✔ Step 2 Shared Components
+✔ Step 3 Dashboard Layout
+✔ Step 4 SOC Dashboard
+✔ Step 5 Threat Analysis
+✔ Step 6 Agent Workflow
+
+NEXT TASK:
+Phase 5 Step 7 – Memory Poisoning Visualization
+
+IMPORTANT:
+Generate only 1 file at a time.
+Provide:
+1. Exact file path
+2. Full code
+3. No explanations unless necessary.
+
+Wait for my confirmation before generating the next file.
+
+# Notes
+
+Generate only one file at a time.
+
+Always use existing:
+
+* Zustand store
+* API services
+* Tailwind design system
+* Framer Motion animations
+
+Do not regenerate already completed files.

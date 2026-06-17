@@ -136,23 +136,60 @@ class GeminiService:
         attack_type: str,
         fusion_score: float,
         severity: str,
+        is_malicious: bool,
         similar_examples: Optional[List[Dict]] = None,
     ) -> str:
         """
-        Generate a natural language explanation of why a prompt is dangerous.
-        Called by the Analysis Agent for every detected threat.
-
-        Returns a 2-4 sentence explanation suitable for the dashboard.
+        Generate explanation for both safe and malicious prompts.
         """
+
         examples_str = ""
+
         if similar_examples:
             examples_str = "\n".join(
-                f"  - \"{ex.get('document', '')[:100]}\" "
-                f"(similarity: {ex.get('similarity', 0):.2f})"
+                f'- "{ex.get("document", "")[:100]}" '
+                f'(similarity: {ex.get("similarity", 0):.2f})'
                 for ex in similar_examples[:2]
             )
 
-        prompt = f"""Analyze this potentially malicious AI prompt and explain the threat.
+        # SAFE PROMPTS
+        if not is_malicious:
+            prompt = f"""
+The following prompt has been classified as SAFE.
+
+PROMPT:
+"{prompt_text[:500]}"
+
+Classification:
+- Attack Type: safe
+- Threat Score: {fusion_score:.2f}
+- Severity: NONE
+
+Provide a short explanation (2-3 sentences) describing why this prompt is considered safe.
+
+Mention:
+1. No prompt injection indicators.
+2. No jailbreak behavior.
+3. No attempt to access hidden instructions, memory, or system prompts.
+
+Return plain text only.
+"""
+
+            try:
+                explanation = await self._acall(prompt)
+
+                if explanation:
+                    return explanation
+
+                return self._fallback_explanation("safe", "NONE")
+
+            except Exception as e:
+                log.error(f"safe explain_threat failed: {e}")
+                return self._fallback_explanation("safe", "NONE")
+
+        # MALICIOUS PROMPTS
+        prompt = f"""
+Analyze this malicious AI prompt and explain the threat.
 
 PROMPT UNDER ANALYSIS:
 "{prompt_text[:500]}"
@@ -163,20 +200,34 @@ DETECTION METADATA:
 - Severity: {severity}
 {f'- Similar known attacks:{chr(10)}{examples_str}' if examples_str else ''}
 
-Provide a clear, technical explanation (2-4 sentences) of:
-1. What this prompt is attempting to do
-2. What harm it could cause to an AI/RAG system
-3. Why it was classified as {attack_type}
+Provide a clear technical explanation (2-4 sentences):
 
-Write for a security analyst audience. Be specific about the attack vector.
-Do NOT include JSON. Plain prose only."""
+1. What the prompt is attempting to do.
+2. Why it is dangerous.
+3. Why it was classified as {attack_type}.
+4. Potential impact on an AI or RAG system.
+
+Return plain text only.
+"""
 
         try:
             explanation = await self._acall(prompt)
-            return explanation or self._fallback_explanation(attack_type, severity)
+
+            if explanation:
+                return explanation
+
+            return self._fallback_explanation(
+                attack_type,
+                severity,
+            )
+
         except Exception as e:
             log.error(f"explain_threat failed: {e}")
-            return self._fallback_explanation(attack_type, severity)
+
+            return self._fallback_explanation(
+                attack_type,
+                severity,
+            )
 
     # ── Feature 2: Mitigation Steps ───────────────────────────────────
 
@@ -327,36 +378,43 @@ Respond with ONLY this JSON:
     # ── Fallback Responses ────────────────────────────────────────────
 
     @staticmethod
-    def _fallback_explanation(attack_type: str, severity: str) -> str:
+    def _fallback_explanation(
+        attack_type: str,
+        severity: str,
+    ) -> str:
         explanations = {
+            "safe": (
+                "This prompt appears benign and does not contain indicators "
+                "of prompt injection, jailbreak attempts, role hijacking, "
+                "or sensitive data extraction. The request is consistent "
+                "with normal user interaction patterns."
+            ),
+
             "jailbreak": (
-                f"This {severity.lower()} severity jailbreak attempt uses instruction "
-                "override techniques to bypass the AI system's safety guidelines. "
-                "The prompt attempts to redefine the model's operational boundaries "
-                "and could expose the system to unrestricted harmful outputs."
+                f"This {severity.lower()} severity jailbreak attempt uses "
+                "instruction override techniques to bypass the AI system's "
+                "safety boundaries."
             ),
+
             "prompt_injection": (
-                f"A {severity.lower()} severity prompt injection attack was detected. "
-                "The prompt attempts to hijack the AI's instruction processing by "
-                "embedding adversarial commands within seemingly benign input, "
-                "potentially overriding system-level directives."
+                f"A {severity.lower()} severity prompt injection attack was "
+                "detected. The prompt attempts to manipulate instruction processing."
             ),
+
             "role_hijacking": (
-                f"This {severity.lower()} severity role hijacking attack attempts "
-                "to reassign the AI's identity and operational persona, bypassing "
-                "established security boundaries through persona manipulation."
+                f"This {severity.lower()} severity role hijacking attempt "
+                "tries to alter the model's identity or persona."
             ),
+
             "data_extraction": (
-                f"A {severity.lower()} severity data extraction attempt was detected. "
-                "The prompt is designed to elicit confidential training data, "
-                "system prompts, or internal knowledge base contents."
+                f"A {severity.lower()} severity data extraction attempt was "
+                "detected. The prompt seeks confidential information."
             ),
         }
+
         return explanations.get(
             attack_type,
-            f"A {severity.lower()} severity {attack_type} attack was detected. "
-            "The prompt contains patterns consistent with known adversarial "
-            "injection techniques targeting AI and RAG systems.",
+            f"A {severity.lower()} severity {attack_type} attack was detected."
         )
 
     @staticmethod

@@ -50,6 +50,7 @@ class AnalysisAgent:
                 attack_type=state.get("attack_type", "unknown"),
                 fusion_score=state.get("fusion_score", 0.0),
                 severity=state.get("severity", "LOW"),
+                is_malicious=state.get("is_malicious", True),
                 similar_examples=clf.get("top_similar", []),
             )
 
