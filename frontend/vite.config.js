@@ -7,15 +7,12 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      // Clean imports: import X from '@/components/...' instead of '../../components/...'
       '@': path.resolve(__dirname, './src'),
     },
   },
 
   server: {
     port: 3000,
-    // Proxy all /api calls to the FastAPI backend during development.
-    // No CORS issues — Vite forwards requests transparently.
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
@@ -28,7 +25,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    // Split large vendor chunks for better caching
     rollupOptions: {
       output: {
         manualChunks: {
@@ -39,5 +35,12 @@ export default defineConfig({
         },
       },
     },
+  },
+
+  // ← ADD THIS — tells Vite to replace /api calls with Railway URL in production
+  define: {
+    __API_BASE__: JSON.stringify(
+      process.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
+    ),
   },
 })
